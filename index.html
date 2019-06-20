@@ -1,13 +1,66 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>测试主页</title>
-	<meta charset="utf-8">
-	<script type="text/javascript">
-		window.open("test.html","test");
-	</script>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <style type="text/css">
+    body{
+    	height: 1200px;
+    }
+	.A{
+		width:100px;
+		height: 100px;
+		background-color: green;
+		border-style: solid;
+		border-color:red;
+		border-width: 10px;
+		/*display: inline;*/
+		padding:5px;
+		line-height: 100px;
+		position: relative;
+		/*margin-left: 100px;*/
+	}
+    .B{
+		border-style: solid;
+		border-width: 10px;
+		width: 100px;
+		height: 100px;
+		background-color: orange;
+		margin: auto;
+    }
+    /*flex弹性布局实现垂直居中*/
+	.vertical-container{
+		margin: auto;
+		height: 300px;
+		width:500px;
+		display: -webkit-flex;
+		display: flex;
+		-webkit-align-items:center;
+		align-items:center;
+		-webkit-justify-content:center;
+		justify-content:center;
+		background-color:blue;
+		/*width:200px;*/
+	}
+	
 
-</body>
+
+    </style>
+  </head>
+  <body>
+     
+	<div class="A">
+	 A div block
+	</div>
+	<div class="B">
+	 B div block
+	</div>
+	<div class="vertical-container">
+		<div class="B"></div>
+		<div class="B"></div>
+	</div>
+	
+	
+  </body>
+  <script type="text/javascript">
+  </script>
 </html>
