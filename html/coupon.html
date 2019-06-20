@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>卡券</title>
+	<meta charset="utf-8">
+	<script type="text/javascript"></script>
+	<style type="text/css">
+		/*居中圆形背景图*/
+		.center-circle {
+			width: 100px;
+			height: 100px;
+			background: radial-gradient(circle at 50px 50px, transparent 10px, #00adb5 0);
+		}
+		.linear-gradient {
+			width: 100px;
+			height: 100px;
+			background: linear-gradient(to right, #00adb5, #00adb5);
+		}
+		.left-circle{
+			width: 100px;
+			height: 100px;
+			position: relative;
+			background: radial-gradient(circle at 0 50px, transparent 10px, #00adb5 0) top left/100px 100% no-repeat;
+		}
+		.hollow-circles {
+			width: 300px;
+			height: 100px;
+			position: relative;
+			background: #00adb5;
+			margin-bottom: 10px;
+		}
+		.hollow-circles::after {
+			content: '';
+			position: absolute;
+			height: 5px;
+			width:100%;
+			left: 0;
+			bottom: -5px;
+			background-image: linear-gradient(to right, #00adb5 5px, transparent 5px, transparent),
+			radial-gradient(10px circle at 10px 5px, transparent 5px, #00adb5 5px);
+			background-size: 15px 5px;
+		}
+
+		.two-circles {
+			width: 300px;
+			height: 100px;
+			background: radial-gradient(circle at right top, transparent 10px, #00adb5 0) top left / 60px 51% no-repeat,
+			radial-gradient(circle at right bottom, transparent 10px, #00adb5 0) bottom left /60px 51% no-repeat,
+			radial-gradient(circle at left top, transparent 10px, #eeeeee 0) top right /240px 51% no-repeat,
+			radial-gradient(circle at left bottom, transparent 10px, #eeeeee 0) bottom right /240px 51% no-repeat;
+		}
+
+
+
+
+
+	</style>
+</head>
+<body>
+	<div class="hollow-circles">
+		
+	</div>
+	<div class="left-circle">
+		
+	</div>
+	<div class="two-circles"></div>
+</body>
+</html>
