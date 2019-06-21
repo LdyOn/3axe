@@ -3,14 +3,27 @@
 <head>
 	<title>TEST</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/css/basic/emojify.min.css" />
-	<script src="//cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/js/emojify.min.js"></script>
-	<script type="text/javascript">
-		emojify.run(document.getElementById('my-element'));
-	</script>
+	<!-- <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/css/basic/emojify.min.css" />
+	<script src="//cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/js/emojify.min.js"></script> -->
+	<style type="text/css">
+		.cube{
+			width: 100px;
+			height: 100px;
+			background-color: green;
+		}
+	</style>
+	
 </head>
 <body>
-	<div id="my-element"></div>
+	<div id="oox">hello<span>WORKMAN</span></div>
 	
 </body>
+<script type="text/javascript">
+	var el = document.getElementsByTagName("div")[0];
+	var new_el = document.createElement("div");
+	new_el.className = "cube";
+	el.appendChild(new_el);
+	console.log(el.textContent);
+	console.log(el.innerHTML);
+</script>
 </html>

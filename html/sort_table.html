@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SortTable</title>
+	<meta charset="utf-8">
+	<script type="text/javascript">
+		function sortrows(table,n,comparator) {
+			var tbody = table.tBodies[0];
+			var rows = tbody.getElementsByTagName("tr");
+			rows = Array.prototype.slice.call(rows,0);
+			rows.sort(function(row1,row2){
+				var cell1 = row1.getElementsByTagName("td")[n];
+				var cell2 = row2.getElementsByTagName("td")[n];
+				var val1 = cell1.textContent||cell1.innerText;
+				var val1 = Number(val1);
+				var val2 = cell2.textContent||cell2.innerText;
+				var val2 = Number(val2);
+				if(comparator) return comparator(val1,val2);
+				if(val1<val2)return -1;
+				else if(val1>val2) return 1;
+				else return 0;
+			});
+			for (var i = 0; i <rows.length; i++) {
+				tbody.appendChild(rows[i]);
+			}
+		}
+
+		function makeSortable(table) {
+			var headers = table.getElementsByTagName("th");
+			for (var i = 0; i < headers.length; i++) {
+				(function(n){
+					headers[i].onclick = function(){
+						sortrows(table,n);
+					}
+				}(i));
+			}
+		}
+		window.onload = function(){
+			// for(var ele in document){
+			// 	console.log(ele);
+			// }
+			console.log(document.location);
+			makeSortable(document.getElementsByTagName("table")[0]);
+		}
+	</script>
+</head>
+<body>
+	<table border="1">
+		<thead>
+			<th>ONE</th>
+			<th>TWO</th>
+			<th>THREE</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1</td>
+				<td>6</td>
+				<td>2</td>
+			</tr>
+			<tr>
+				<td>8</td>
+				<td>10</td>
+				<td>3</td>
+			</tr>
+			<tr>
+				<td>23</td>
+				<td>9</td>
+				<td>7</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
