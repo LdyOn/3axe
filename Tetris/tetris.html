@@ -5,9 +5,11 @@
 	<meta charset="utf-8">
 	<style type="text/css">
 		.cube{
-			border: solid 5px #ff0000;
+			/*border: solid 5px #ff0000;*/
 			height: 20px;
 			width: 20px;
+			position: relative;
+			background-color: #660066;
 		}
 		body{
 			background-color: #C0C0C0;
@@ -21,7 +23,7 @@
 
 		window.onload = function(){			
 			var box = new Box();
-			box.draw();
+			box.startGame();
 			// console.log(window.innerWidth,window.innerHeight);
 			// console.log(window.pageXOffset,window.pageYOffset);
 		};
