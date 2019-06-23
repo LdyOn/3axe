@@ -4,10 +4,11 @@ var config = {
 	"box_height":650,//游戏框长度，单位px
 	"fall_speed":1,//下落速度
 	"move_speed":2,//左右移动s速度
-	"cubes_site_size":20,//小方块的尺寸,单位px
+	"cube_size":20,//小方块的尺寸,单位px
+	"half_cube_size":10,//小方块的尺寸,单位px
 	center:{
-		"x":this.box_width/2,
-		"y":this.cubes_site_size*4,
+		x:250,
+		y:60,
 	},
 };
 /*
@@ -38,7 +39,8 @@ Cube.prototype = {
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			var tmp = 0;
 			tmp = this.cubes_site[i]["x"];
-			this.cubes_site[i]["x"] = this.cubes_site[i]["y"]*direction;
+			this.cubes_site[i]["x"] =
+			this.cubes_site[i]["y"]*direction;
 			this.cubes_site[i]["y"] = -tmp*direction;
 		}
 		
@@ -51,8 +53,11 @@ Cube.prototype = {
 	draw:function(box){
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			var div = document.createElement("div");
-			div.style.top = this.cubes_site[i]["y"];
-			div.style.left = this.cubes_site[i]["x"];
+			//console.log(this.center["x"]);
+			var site = this.siteConvert(this.cubes_site[i]["x"],
+				this.cubes_site[i]["y"]);
+			div.style.top = site.y+"px";
+			div.style.left = site.x+"px";
 			div.className =  "cube";
 			this.cubes.push(div);
 			box.appendChild(div);
@@ -61,6 +66,14 @@ Cube.prototype = {
 	//碰撞检测
 	collide:function(){
 
+	},
+	//坐标转换,把相对于旋转中心的坐标转换为box中的坐标
+	siteConvert:function (x,y) {
+		var site = {};
+		site.x = x-config.half_cube_size+this.center["x"];
+		site.y = y-config.half_cube_size+this.center["y"];
+
+		return site;
 	},
 
 };
@@ -83,7 +96,9 @@ Box.prototype = {
 		div.style.borderWidth = "10px";
 		div.style.borderColor = "#33FF33";
 		div.style.margin = "auto";
+		div.style.position = "absolute";
 		div.style.backgroundColor = "#00CCFF";
+		div.style.left = (window.innerWidth-this.box_width)/2+"px";
 		document.body.appendChild(div);
 		var pos = div.getBoundingClientRect();
 		this.box = div;
@@ -101,12 +116,12 @@ Box.prototype = {
 	run:function(){
 		//定义各种不同组合的方块
 		var cubes_site = [
-			[{"x":0,"y":0}],
-			[],
+			[{"x":0,"y":0}],//一个方块
+			[{"x":0,"y":-10},{"x":0,"y":10}],//两个方块
 			[],
 		];
 		//投放方块到box
-		var multi = new Cube(cubes_site[0]);
+		var multi = new Cube(cubes_site[1]);
 		multi.draw(this.box);
 	},
 	//结束游戏
