@@ -1,10 +1,10 @@
 //全局变量config，保存游戏配置
 var config = {
-	"box_width":400,//游戏框宽度，单位px
-	"box_height":800,//游戏框长度，单位px
-	"fall_speed":1,//速度
-	"move_speed":2,//速度
-	"cube_size":20,//单位px
+	"box_width":500,//游戏框宽度，单位px
+	"box_height":650,//游戏框长度，单位px
+	"fall_speed":1,//下落速度
+	"move_speed":2,//左右移动s速度
+	"cube_size":20,//小方块的尺寸,单位px
 };
 /*
 *定义一个cube类，用这个cube类来实现下落的方块
@@ -47,5 +47,37 @@ Cube.prototype = {
 
 	},
 
+};
+
+//定义box类，绘制游戏区域
+function Box() {
+	this.box_width = config.box_width;
+	this.box_height = config.box_height;
+}
+//box类原型
+Box.prototype = {
+	//绘制游戏区域
+	draw:function(){
+		var div = document.createElement("div");
+		//console.log(this.box_width,this.box_height);
+		div.id = "#box";
+		div.style.width = this.box_width+"px";
+		div.style.height = this.box_height+"px";
+		div.style.borderStyle = "solid";
+		div.style.borderWidth = "10px";
+		div.style.borderColor = "#33FF33";
+		div.style.margin = "auto";
+		div.style.backgroundColor = "#00CCFF";
+		document.body.appendChild(div);
+		console.log(div.getBoundingClientRect());
+	},
+	//开始游戏
+	startGame:function(){
+
+	},
+	//结束游戏
+	endGame:function(){
+
+	}
 };
 

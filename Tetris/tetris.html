@@ -3,11 +3,28 @@
 <head>
 	<title>俄罗斯方块</title>
 	<meta charset="utf-8">
+	<style type="text/css">
+		.cube{
+			border: solid 5px #ff0000;
+			height: 20px;
+			width: 20px;
+		}
+		body{
+			background-color: #C0C0C0;
+		}
+	</style>
 </head>
 <body>
 
 	<script type="text/javascript" src="tetris.js"></script>
 	<script type="text/javascript">
+
+		window.onload = function(){			
+			var box = new Box();
+			box.draw();
+			// console.log(window.innerWidth,window.innerHeight);
+			// console.log(window.pageXOffset,window.pageYOffset);
+		};
 		
 	</script>
 </body>
