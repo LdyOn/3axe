@@ -24,14 +24,20 @@ function Cube(cubes_site) {
 Cube.prototype = {
 	//下落
 	fall:function(){
+		//console.log(this);
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			this.cubes_site[i]["y"] += config["fall_speed"];
+			var convert = this.siteConvert(0,
+				this.cubes_site[i]["y"]);
+			console.log(convert);
+			this.cubes[i].style.top = convert.y+"px";
 		}
 	},
 	//左右移动,1:右移，-1：左移
 	move:function(direction){
 		for (var i = 0; i < this.cubes_site.length; i++) {
-			this.cubes_site[i]["x"] += config["move_speed"]*direction;
+			this.cubes_site[i]["x"] += 
+			config["move_speed"]*direction;
 		}
 	},
 	//旋转，direction为1，顺时针旋转九十度，-1则逆时针旋转九十度
@@ -123,15 +129,20 @@ Box.prototype = {
 			[{"x":0,"y":-40},{"x":0,"y":-20},
 			{"x":0,"y":0},{"x":22,"y":0}],//四个方块，L字型
 			[{"x":0,"y":-40},{"x":0,"y":-20},
-			{"x":0,"y":0},{"x":-22,"y":0}],//四个方块，L字型
-			[{"x":0,"y":-20},{"x":-21,"y":0},
-			{"x":0,"y":0},{"x":22,"y":0}],//四个方块，品字型
+			{"x":0,"y":0},{"x":-20,"y":0}],//四个方块，L字型
+			[{"x":0,"y":-20},{"x":-20,"y":0},
+			{"x":0,"y":0},{"x":20,"y":0}],//四个方块，品字型
 			[{"x":-10,"y":-20},{"x":-10,"y":0},
-			{"x":12,"y":0},{"x":12,"y":22}],//四个方块，Z字型
+			{"x":10,"y":0},{"x":10,"y":20}],//四个方块，Z字型
 		];
 		//投放方块到box
 		var multi = new Cube(cubes_site[6]);
+		// multi.rotate(1);
 		multi.draw(this.box);
+		var f = function(){
+			multi.fall();
+		};
+		// var m = setInterval(f,50);
 	},
 	//结束游戏
 	endGame:function(){
