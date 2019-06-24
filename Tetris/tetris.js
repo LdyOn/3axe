@@ -6,6 +6,7 @@ var config = {
 	"move_speed":2,//左右移动s速度
 	"cube_size":20,//小方块的尺寸,单位px
 	"half_cube_size":10,//小方块的尺寸,单位px
+	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],
 	center:{
 		x:250,
 		y:60,
@@ -64,6 +65,10 @@ Cube.prototype = {
 				this.cubes_site[i]["y"]);
 			div.style.top = site.y+"px";
 			div.style.left = site.x+"px";
+			//给小方块添加边框要考虑到边框占据的像素，
+			//所以这里用随机颜色加以区分
+			div.style.backgroundColor = 
+			config.color[randomNum(0,3)];
 			div.className =  "cube";
 			this.cubes.push(div);
 			box.appendChild(div);
@@ -149,6 +154,21 @@ Box.prototype = {
 
 	},
 };
+
+//生成从minNum到maxNum的随机数
+function randomNum(minNum,maxNum){ 
+    switch(arguments.length){ 
+        case 1: 
+            return parseInt(Math.random()*minNum+1,10); 
+        break; 
+        case 2: 
+            return parseInt(Math.random()*(maxNum-minNum+1)+minNum,10); 
+        break; 
+            default: 
+                return 0; 
+            break; 
+    } 
+} 
 
 
 
