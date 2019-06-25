@@ -33,23 +33,30 @@ var config = {
 //cubes_site数组保存每个小方块的坐标，
 //center保存初始旋转中心点的坐标
 //box是游戏框对象
-function Cube(cubes_site,box) {
+//game是Game对象
+function Cube(cubes_site,game) {
 	this.cubes_site = cubes_site;//小方块坐标
 	this.cubes = []; //小方块div对象
 	this.center = config.center;
-	this.box = box;
+	this.box = game.box;
+	this.game = game;
+	var rotate_times = randomNum(3);
+	// console.log(rotate_times);
+	for (var i = 0; i <rotate_times; i++) {
+		this.rotate(1);
+	}
+	this.draw();
 }
 //定义类原型
 Cube.prototype = {
 	//下落
 	fall:function(){
-		//console.log(this);
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			this.cubes_site[i]["y"] += config["fall_speed"];
-			var convert = this.siteConvert(0,
-				this.cubes_site[i]["y"]);
-			console.log(convert);
-			this.cubes[i].style.top = convert.y+"px";
+			// var convert = this.siteConvert(0,
+				// this.cubes_site[i]["y"]);
+			this.cubes[i].top += config["fall_speed"];
+			this.cubes[i].style.top = this.cubes[i].top+"px";
 		}
 	},
 	//左右移动,1:右移，-1：左移
@@ -81,6 +88,8 @@ Cube.prototype = {
 			//console.log(this.center["x"]);
 			var site = this.siteConvert(this.cubes_site[i]["x"],
 				this.cubes_site[i]["y"]);
+			div.top = site.y;//纵坐标
+			div.left = site.x;//横坐标
 			div.style.top = site.y+"px";
 			div.style.left = site.x+"px";
 			//给小方块添加边框要考虑到边框占据的像素，
@@ -91,10 +100,7 @@ Cube.prototype = {
 			this.box.appendChild(div);
 		}
 	},
-	//碰撞检测
-	collide:function(){
-
-	},
+	
 	//坐标转换,把相对于旋转中心的坐标转换为box中的坐标
 	siteConvert:function (x,y) {
 		var site = {};
@@ -116,22 +122,23 @@ Game.prototype = {
 	//绘制游戏区域
 	draw:function(){
 		var div = document.createElement("div");
-		//console.log(this.box_width,this.box_height);
 		div.id = "#box";
 		div.style.width = this.box_width+"px";
 		div.style.height = this.box_height+"px";
 		div.style.borderStyle = "solid";
 		div.style.borderWidth = "10px";
 		div.style.borderColor = "#33FF33";
-		div.style.margin = "auto";
 		div.style.position = "absolute";
 		div.style.backgroundColor = "#00CCFF";
 		div.style.left = (window.innerWidth-this.box_width)/2+"px";
+		div.style.top = "30px";
 		document.body.appendChild(div);
 		var pos = div.getBoundingClientRect();
 		this.box = div;
-		this.box_x = pos.left;
-		this.box_y = pos.top;
+		this.box_pos = pos;
+		// this.box_x = pos.left;
+		// this.box_y = pos.top;
+		// console.log(pos);
 	},
 	//开始游戏
 	startGame:function(){
@@ -141,15 +148,14 @@ Game.prototype = {
 		
 	},
 	//运行游戏
-	run:function(){		
+	run:function(){			
 		//投放方块到box
-		var multi = new Cube(config.cubes_site[6],this.box);
-		// multi.rotate(1);
-		multi.draw();
-		var f = function(){
-			multi.fall();
-		};
-		// var m = setInterval(f,50);
+		var blocks = new Cube(config.cubes_site[6],this);
+		
+	},
+	//碰撞检测
+	collide:function(){
+
 	},
 	//结束游戏
 	endGame:function(){
