@@ -1,25 +1,43 @@
 //全局变量config，保存游戏配置
 var config = {
 	"box_width":500,//游戏框宽度，单位px
-	"box_height":650,//游戏框长度，单位px
+	"box_height":650,//游戏框高度，单位px
 	"fall_speed":1,//下落速度
-	"move_speed":2,//左右移动s速度
+	"move_speed":2,//左右移动速度
 	"cube_size":20,//小方块的尺寸,单位px
-	"half_cube_size":10,//小方块的尺寸,单位px
+	"half_cube_size":10,//半边长度,单位px
 	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],
-	center:{
+	center:{//投放中心点
 		x:250,
 		y:60,
 	},
+	"cubes_site":[ //方块初始坐标
+		[{"x":0,"y":0}],//一个方块
+		[{"x":0,"y":-10},{"x":0,"y":10}],//两个方块
+		[{"x":0,"y":-30},{"x":0,"y":-10},
+		{"x":0,"y":10},{"x":0,"y":30}],//四个方块，长条形
+		[{"x":0,"y":-40},{"x":0,"y":-20},
+		{"x":0,"y":0},{"x":22,"y":0}],//四个方块，L字型
+		[{"x":0,"y":-40},{"x":0,"y":-20},
+		{"x":0,"y":0},{"x":-20,"y":0}],//四个方块，L字型
+		[{"x":0,"y":-20},{"x":-20,"y":0},
+		{"x":0,"y":0},{"x":20,"y":0}],//四个方块，品字型
+		[{"x":-10,"y":-20},{"x":-10,"y":0},
+		{"x":10,"y":0},{"x":10,"y":20}],//四个方块，Z字型
+	],
+
 };
 /*
 *定义一个cubes_site类，用这个cubes_site类来实现下落的方块
 */
-//cubes_site数组保存每个小方块的坐标，center保存初始旋转中心点的坐标
-function Cube(cubes_site) {
-	this.cubes_site = cubes_site;
-	this.cubes = [];
+//cubes_site数组保存每个小方块的坐标，
+//center保存初始旋转中心点的坐标
+//box是游戏框对象
+function Cube(cubes_site,box) {
+	this.cubes_site = cubes_site;//小方块坐标
+	this.cubes = []; //小方块div对象
 	this.center = config.center;
+	this.box = box;
 }
 //定义类原型
 Cube.prototype = {
@@ -41,7 +59,7 @@ Cube.prototype = {
 			config["move_speed"]*direction;
 		}
 	},
-	//旋转，direction为1，顺时针旋转九十度，-1则逆时针旋转九十度
+	//绕center中心点旋转旋转，direction为1，顺时针旋转九十度，-1则逆时针旋转九十度
 	rotate:function (direction) {		
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			var tmp = 0;
@@ -57,7 +75,7 @@ Cube.prototype = {
 		
 	},
 	//在box中显示方块
-	draw:function(box){
+	draw:function(){
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			var div = document.createElement("div");
 			//console.log(this.center["x"]);
@@ -67,11 +85,10 @@ Cube.prototype = {
 			div.style.left = site.x+"px";
 			//给小方块添加边框要考虑到边框占据的像素，
 			//所以这里用随机颜色加以区分
-			div.style.backgroundColor = 
-			config.color[randomNum(0,3)];
+			// div.style.backgroundColor = config.color[randomNum(0,3)];
 			div.className =  "cube";
 			this.cubes.push(div);
-			box.appendChild(div);
+			this.box.appendChild(div);
 		}
 	},
 	//碰撞检测
@@ -90,12 +107,12 @@ Cube.prototype = {
 };
 
 //定义box类，绘制游戏区域
-function Box() {
+function Game() {
 	this.box_width = config.box_width;
 	this.box_height = config.box_height;
 }
 //box类原型
-Box.prototype = {
+Game.prototype = {
 	//绘制游戏区域
 	draw:function(){
 		var div = document.createElement("div");
@@ -124,26 +141,11 @@ Box.prototype = {
 		
 	},
 	//运行游戏
-	run:function(){
-		//定义各种不同组合的方块
-		var cubes_site = [
-			[{"x":0,"y":0}],//一个方块
-			[{"x":0,"y":-10},{"x":0,"y":10}],//两个方块
-			[{"x":0,"y":-30},{"x":0,"y":-10},
-			{"x":0,"y":10},{"x":0,"y":30}],//四个方块，长条形
-			[{"x":0,"y":-40},{"x":0,"y":-20},
-			{"x":0,"y":0},{"x":22,"y":0}],//四个方块，L字型
-			[{"x":0,"y":-40},{"x":0,"y":-20},
-			{"x":0,"y":0},{"x":-20,"y":0}],//四个方块，L字型
-			[{"x":0,"y":-20},{"x":-20,"y":0},
-			{"x":0,"y":0},{"x":20,"y":0}],//四个方块，品字型
-			[{"x":-10,"y":-20},{"x":-10,"y":0},
-			{"x":10,"y":0},{"x":10,"y":20}],//四个方块，Z字型
-		];
+	run:function(){		
 		//投放方块到box
-		var multi = new Cube(cubes_site[6]);
+		var multi = new Cube(config.cubes_site[6],this.box);
 		// multi.rotate(1);
-		multi.draw(this.box);
+		multi.draw();
 		var f = function(){
 			multi.fall();
 		};
