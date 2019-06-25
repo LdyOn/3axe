@@ -40,8 +40,8 @@ function Cube(cubes_site,game) {
 	this.center = config.center;
 	this.box = game.box;
 	this.game = game;
-	var rotate_times = randomNum(3);
-	// console.log(rotate_times);
+	var rotate_times = randomNum(0,3);
+	console.log(rotate_times);
 	for (var i = 0; i <rotate_times; i++) {
 		this.rotate(1);
 	}
@@ -128,7 +128,7 @@ Game.prototype = {
 		div.style.borderStyle = "solid";
 		div.style.borderWidth = "10px";
 		div.style.borderColor = "#33FF33";
-		div.style.position = "absolute";
+		div.style.position = "fixed";
 		div.style.backgroundColor = "#00CCFF";
 		div.style.left = (window.innerWidth-this.box_width)/2+"px";
 		div.style.top = "30px";

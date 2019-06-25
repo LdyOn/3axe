@@ -60,9 +60,34 @@
 		<div class="B"></div>
 		<div class="B"></div>
 	</div>
-	
-	
+	<a href="javascript: var q;
+	if(window.getSelection)q=window.getSelection().toString();
+	else if(document.selection)q=window.selection.createRange().text;
+	void window.open('http://en.wikipedia.org/wiki/'+q);">Look</a>
+	<p contenteditable>今天是个好日子，因为我</p>
+	<textarea>
+		
+	</textarea>
+	<div style="width: 100px;height: 100px;background-color: yellow" ></div>
   </body>
   <script type="text/javascript">
+  	function getSelectionText() {
+  		if(window.getSelection){
+  			console.log(window.getSelection().toString());
+  		}
+		else if(document.selection){
+			console.log(window.selection.createRange().text);
+		}
+  	}
+  	// window.onload = function(){
+	function link() {
+		var url = prompt("enter link");
+		if(url){
+			document.execCommand("createlink",false,url);
+		}
+	}
+  	
+  	
+  	// setInterval(link,8000);
   </script>
 </html>
