@@ -12,7 +12,7 @@ var config = {
 		y:60,
 	},
 	"cubes_site":[ //方块初始坐标
-		[{"x":0,"y":0}],//一个方块
+		[{"x":-10,"y":-10}],//一个方块
 		[{"x":0,"y":-10},{"x":0,"y":10}],//两个方块
 		[{"x":0,"y":-30},{"x":0,"y":-10},
 		{"x":0,"y":10},{"x":0,"y":30}],//四个方块，长条形
@@ -22,8 +22,8 @@ var config = {
 		{"x":0,"y":0},{"x":-20,"y":0}],//四个方块，L字型
 		[{"x":0,"y":-20},{"x":-20,"y":0},
 		{"x":0,"y":0},{"x":20,"y":0}],//四个方块，品字型
-		[{"x":-10,"y":-20},{"x":-10,"y":0},
-		{"x":10,"y":0},{"x":10,"y":20}],//四个方块，Z字型
+		[{"x":0,"y":-20},{"x":0,"y":0},
+		{"x":20,"y":0},{"x":20,"y":20}],//四个方块，Z字型
 	],
 
 };
@@ -52,14 +52,16 @@ function Cube(cubes_site,game) {
 Cube.prototype = {
 	//下落
 	fall:function(){
-		this.distance += config["fall_speed"];
+		this.distance += config["fall_speed"];//增加行进距离
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			this.cubes_site[i]["y"] += config["fall_speed"];
 			// var convert = this.siteConvert(0,
 				// this.cubes_site[i]["y"]);
 			this.cubes[i].top += config["fall_speed"];
 			this.cubes[i].style.top = this.cubes[i].top+"px";
+			this.center.y += config["fall_speed"];
 		}
+		console.log(this.distance);
 	},
 	//左右移动,1:右移，-1：左移
 	move:function(direction){
@@ -77,6 +79,10 @@ Cube.prototype = {
 			this.cubes_site[i]["x"] =
 			this.cubes_site[i]["y"]*direction;
 			this.cubes_site[i]["y"] = -tmp*direction;
+			if(this.cubes_site[i]["x"]%config.cube_size!==0){
+				this.cubes_site[i]["x"]+=config.half_cube_size;
+				
+			}
 		}
 		
 	},
@@ -172,31 +178,46 @@ Game.prototype = {
 		run();
 		function run() {
 			//下落碰撞检测
-			if(game.collideBottom(blocks)){
+			if(game.fallCollision(blocks)){
 				if(blocks.distance==0){
 					game_state = 0;//结束游戏
 				}else{ //处理落下的方块并且生成新的方块
-
+					game.addNewBlocks(blocks);
+					blocks = new Cube(config.cubes_site[randomNum(0,6)],game);
 				}
 			}else{
 				blocks.fall(); //go
 			}
 
 			if(game_state==1){
-				setTimeout(run,100);
+				setTimeout(run,30);
 			}else{
-				this.endGame();
+				game.endGame();
 			}
 		}
 		
 	},
 	//“吸收”新的方块
 	addNewBlocks:function(blocks){
-		
+		for (var i = 0; i < blocks.cubes.length; i++) {
+			this.map_blocks[blocks.cubes[i].left].push(
+				blocks.cubes[i].top);
+		}
 	},
 	//下落碰撞
-	collideBottom: function(blocks) {
-
+	fallCollision: function(blocks) {
+		var x,y;
+		for (var i = 0; i < blocks.cubes.length; i++) {
+			x = blocks.cubes[i].left;
+			y = blocks.cubes[i].top;
+			if(this.map_blocks[x].some(function(u){
+				return u-y <= config.cube_size;
+			})){
+				return true;
+			}
+			
+		}
+		return false;
 	},
 	//运行游戏
 	run:function(){			
