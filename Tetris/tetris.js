@@ -1,13 +1,13 @@
 //全局变量config，保存游戏配置
 var config = {
-	"box_width":500,//游戏框宽度，单位px
-	"box_height":650,//游戏框高度，单位px
-	"fall_speed":1,//下落速度
-	"move_speed":2,//左右移动速度
-	"cube_size":20,//小方块的尺寸,单位px
-	"half_cube_size":10,//半边长度,单位px
-	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],
-	center:{//投放中心点
+	"box_width":500,      //游戏框宽度，单位px
+	"box_height":650,     //游戏框高度，单位px
+	"fall_speed":1,       //下落速度
+	"move_speed":2,       //左右移动速度
+	"cube_size":20,       //小方块的尺寸,单位px
+	"half_cube_size":10,  //半边长度,单位px
+	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],//颜色
+	center:{     //投放中心点
 		x:250,
 		y:60,
 	},
@@ -17,7 +17,7 @@ var config = {
 		[{"x":0,"y":-30},{"x":0,"y":-10},
 		{"x":0,"y":10},{"x":0,"y":30}],//四个方块，长条形
 		[{"x":0,"y":-40},{"x":0,"y":-20},
-		{"x":0,"y":0},{"x":22,"y":0}],//四个方块，L字型
+		{"x":0,"y":0},{"x":20,"y":0}],//四个方块，L字型
 		[{"x":0,"y":-40},{"x":0,"y":-20},
 		{"x":0,"y":0},{"x":-20,"y":0}],//四个方块，L字型
 		[{"x":0,"y":-20},{"x":-20,"y":0},
@@ -27,6 +27,7 @@ var config = {
 	],
 
 };
+
 /*
 *定义一个cubes_site类，用这个cubes_site类来实现下落的方块
 */
@@ -40,9 +41,9 @@ function Cube(cubes_site,game) {
 	this.center = config.center;
 	this.box = game.box;
 	this.game = game;
-	var rotate_times = randomNum(0,3);
-	console.log(rotate_times);
-	for (var i = 0; i <rotate_times; i++) {
+	this.distance = 0;//下落得距离，默认是0
+	var init_rotate = randomNum(0,3);
+	for (var i = 0; i <init_rotate; i++) {
 		this.rotate(1);
 	}
 	this.draw();
@@ -51,6 +52,7 @@ function Cube(cubes_site,game) {
 Cube.prototype = {
 	//下落
 	fall:function(){
+		this.distance += config["fall_speed"];
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			this.cubes_site[i]["y"] += config["fall_speed"];
 			// var convert = this.siteConvert(0,
@@ -67,7 +69,8 @@ Cube.prototype = {
 		}
 	},
 	//绕center中心点旋转旋转，direction为1，顺时针旋转九十度，-1则逆时针旋转九十度
-	rotate:function (direction) {		
+	rotate:function (direction) {	
+		//改变相对于中心点的坐标	
 		for (var i = 0; i < this.cubes_site.length; i++) {
 			var tmp = 0;
 			tmp = this.cubes_site[i]["x"];
@@ -76,6 +79,18 @@ Cube.prototype = {
 			this.cubes_site[i]["y"] = -tmp*direction;
 		}
 		
+	},
+	//响应旋转事件
+	rotateEvent:function(){
+		this.rotate();
+		for (var i = 0; i < cubes.length; i++) {
+			var site = this.siteConvert(this.cubes_site[i]["x"],
+				this.cubes_site[i]["y"]);
+			cubes[i].top = site.y;
+			cubes[i].left = site.x;
+			cubes[i].style.top = site.y+"px";
+			cubes[i].style.left = site.x+"px";
+		}
 	},
 	//生成方块
 	generate:function(){
@@ -88,12 +103,12 @@ Cube.prototype = {
 			//console.log(this.center["x"]);
 			var site = this.siteConvert(this.cubes_site[i]["x"],
 				this.cubes_site[i]["y"]);
-			div.top = site.y;//纵坐标
-			div.left = site.x;//横坐标
-			div.style.top = site.y+"px";
+			div.top = site.y;//相对于box元素的纵坐标
+			div.left = site.x;//相对于box元素的横坐标
+			div.style.top = site.y+"px";//设置style属性，进行定位
 			div.style.left = site.x+"px";
 			//给小方块添加边框要考虑到边框占据的像素，
-			//所以这里用随机颜色加以区分
+			//这里用随机颜色加以区分
 			// div.style.backgroundColor = config.color[randomNum(0,3)];
 			div.className =  "cube";
 			this.cubes.push(div);
@@ -116,6 +131,11 @@ Cube.prototype = {
 function Game() {
 	this.box_width = config.box_width;
 	this.box_height = config.box_height;
+	this.map_blocks = {}; // 已降落的方块
+	for (var i = 0; i < config.box_width; i+=config.cube_size) { //初始化
+		this.map_blocks[i] = [config.box_height];
+	}
+	console.log(this.map_blocks);
 }
 //box类原型
 Game.prototype = {
@@ -144,13 +164,45 @@ Game.prototype = {
 	startGame:function(){
 		
 		this.draw();
-		this.run();
+		//随机生成一个方块，投放方块到box
+		var blocks = new Cube(config.cubes_site[randomNum(0,6)],this);
+		//定义游戏状态
+		var game_state = 1;
+		var game = this;
+		run();
+		function run() {
+			//下落碰撞检测
+			if(game.collideBottom(blocks)){
+				if(blocks.distance==0){
+					game_state = 0;//结束游戏
+				}else{ //处理落下的方块并且生成新的方块
+
+				}
+			}else{
+				blocks.fall(); //go
+			}
+
+			if(game_state==1){
+				setTimeout(run,100);
+			}else{
+				this.endGame();
+			}
+		}
 		
+	},
+	//“吸收”新的方块
+	addNewBlocks:function(blocks){
+		
+	},
+	//下落碰撞
+	collideBottom: function(blocks) {
+
 	},
 	//运行游戏
 	run:function(){			
-		//投放方块到box
-		var blocks = new Cube(config.cubes_site[6],this);
+		//随机生成一个方块，投放方块到box
+		var blocks = new Cube(config.cubes_site[randomNum(0,6)],this);
+
 		
 	},
 	//碰撞检测
