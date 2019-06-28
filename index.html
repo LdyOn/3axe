@@ -29,7 +29,7 @@
     }
     /*flex弹性布局实现垂直居中*/
 	.vertical-container{
-		margin: auto;
+		/*margin: auto;*/
 		height: 300px;
 		width:500px;
 		display: -webkit-flex;
@@ -49,6 +49,7 @@
   <body>
   	<a href="html/coupon.html">卡券</a>
   	<a href="html/sort_table.html">排序</a>
+  	<a href="tetris/tetris.html">俄罗斯方块</a>
      
 	<div class="A">
 	 A div block
@@ -71,23 +72,8 @@
 	<div style="width: 100px;height: 100px;background-color: yellow" ></div>
   </body>
   <script type="text/javascript">
-  	function getSelectionText() {
-  		if(window.getSelection){
-  			console.log(window.getSelection().toString());
-  		}
-		else if(document.selection){
-			console.log(window.selection.createRange().text);
-		}
-  	}
   	// window.onload = function(){
-	function link() {
-		var url = prompt("enter link");
-		if(url){
-			document.execCommand("createlink",false,url);
-		}
-	}
-  	
-  	
-  	// setInterval(link,8000);
+  	// 	document.body.innerHTML = '';
+  	// };
   </script>
 </html>

@@ -12,10 +12,10 @@ var config = {
 		y:60,
 	},
 	"cubes_site":[ //方块初始坐标
-		[{"x":-10,"y":-10}],//一个方块
-		[{"x":0,"y":-10},{"x":0,"y":10}],//两个方块
-		[{"x":0,"y":-30},{"x":0,"y":-10},
-		{"x":0,"y":10},{"x":0,"y":30}],//四个方块，长条形
+		[{"x":0,"y":0}],//一个方块
+		[{"x":0,"y":0},{"x":0,"y":-20}],//两个方块
+		[{"x":0,"y":0},{"x":0,"y":-20},
+		{"x":0,"y":-40},{"x":0,"y":20}],//四个方块，长条形
 		[{"x":0,"y":-40},{"x":0,"y":-20},
 		{"x":0,"y":0},{"x":20,"y":0}],//四个方块，L字型
 		[{"x":0,"y":-40},{"x":0,"y":-20},
@@ -36,13 +36,22 @@ var config = {
 //box是游戏框对象
 //game是Game对象
 function Cube(cubes_site,game) {
-	this.cubes_site = cubes_site;//小方块坐标
+	this.cubes_site = [];//小方块坐标
+	for (var i = 0; i < cubes_site.length; i++) {
+		var c = {};
+		c.x = cubes_site[i].x;
+		c.y = cubes_site[i].y;
+		this.cubes_site.push(c);
+	}
 	this.cubes = []; //小方块div对象
-	this.center = config.center;
-	this.box = game.box;
-	this.game = game;
-	this.distance = 0;//下落得距离，默认是0
-	var init_rotate = randomNum(0,3);
+	this.center = {};//初始化旋转中心点
+	this.center.x = config.center.x;
+	this.center.y = config.center.y;
+	//console.log(config.center);
+	this.box = game.box; //指向box 框
+	this.game = game;    //指向游戏类
+	this.distance = 0;    //下落距离
+	var init_rotate = randomNum(0,3); //初始化旋转
 	for (var i = 0; i <init_rotate; i++) {
 		this.rotate(1);
 	}
@@ -57,11 +66,11 @@ Cube.prototype = {
 			this.cubes_site[i]["y"] += config["fall_speed"];
 			// var convert = this.siteConvert(0,
 				// this.cubes_site[i]["y"]);
-			this.cubes[i].top += config["fall_speed"];
-			this.cubes[i].style.top = this.cubes[i].top+"px";
-			this.center.y += config["fall_speed"];
+			this.cubes[i].top += config["fall_speed"];//设置实时坐标
+			this.cubes[i].style.top = this.cubes[i].top+"px";//设置位置属性
+			this.center.y += config["fall_speed"];//改变中心点坐标
 		}
-		console.log(this.distance);
+		// console.log(this.distance);
 	},
 	//左右移动,1:右移，-1：左移
 	move:function(direction){
@@ -79,10 +88,7 @@ Cube.prototype = {
 			this.cubes_site[i]["x"] =
 			this.cubes_site[i]["y"]*direction;
 			this.cubes_site[i]["y"] = -tmp*direction;
-			if(this.cubes_site[i]["x"]%config.cube_size!==0){
-				this.cubes_site[i]["x"]+=config.half_cube_size;
-				
-			}
+			
 		}
 		
 	},
@@ -159,23 +165,25 @@ Game.prototype = {
 		div.style.left = (window.innerWidth-this.box_width)/2+"px";
 		div.style.top = "30px";
 		document.body.appendChild(div);
-		var pos = div.getBoundingClientRect();
+		
 		this.box = div;
-		this.box_pos = pos;
-		// this.box_x = pos.left;
-		// this.box_y = pos.top;
-		// console.log(pos);
+		
+		
 	},
 	//开始游戏
 	startGame:function(){
-		
+		//清空屏幕
+		document.body.innerHTML = '';	
+		//绘制游戏区域	
 		this.draw();
-		//随机生成一个方块，投放方块到box
+		//随机生成一组方块，投放方块到box
 		var blocks = new Cube(config.cubes_site[randomNum(0,6)],this);
 		//定义游戏状态
 		var game_state = 1;
+		//保存game对象
 		var game = this;
 		run();
+
 		function run() {
 			//下落碰撞检测
 			if(game.fallCollision(blocks)){
@@ -232,7 +240,25 @@ Game.prototype = {
 	},
 	//结束游戏
 	endGame:function(){
-
+		// console.log("Game Over");
+		//打印一个游戏结束框
+		var div = document.createElement("div");
+		div.className = "over";
+		var node = document.createTextNode("Game Over!");
+		div.appendChild(node);
+		//给div快绑定事件
+		var game = this;
+		div.onmouseover = function(){
+			this.textContent = "Click to restart.";
+		};
+		div.onmouseout = function(){
+			this.textContent = "Game Over!";
+		};
+		div.onclick = function(){
+			game.startGame();
+		};
+		//添加到游戏框
+		this.box.appendChild(div);
 	},
 };
 

@@ -10,7 +10,24 @@
 			width: 20px;
 			position: absolute;
 			background-color: #FF0000;
+			/*padding: 5px;*/
 		}
+		.over{
+			border:solid 5px #ff0000;
+			position: relative;
+			top:150px;
+			margin: auto;
+			height: 30px;
+			width:150px;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-align-items:center;
+			align-items:center;
+			-webkit-justify-content:center;
+			justify-content:center;
+			background-color:blue;
+		}
+
 		body{
 			background-color: #C0C0C0;
 		}
@@ -22,7 +39,7 @@
 		window.onload = function(){			
 			var game = new Game();
 			game.startGame();
-			
+		
 			// console.log(window.innerWidth,window.innerHeight);
 			// console.log(window.pageXOffset,window.pageYOffset);
 		};		
