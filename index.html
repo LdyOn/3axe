@@ -57,7 +57,7 @@
 	<div class="B">
 	 B div block
 	</div>
-	<div class="vertical-container">
+	<div class="vertical-container" id="hh">
 		<div class="B"></div>
 		<div class="B"></div>
 	</div>
@@ -66,14 +66,15 @@
 	else if(document.selection)q=window.selection.createRange().text;
 	void window.open('http://en.wikipedia.org/wiki/'+q);">Look</a>
 	<p contenteditable>今天是个好日子，因为我</p>
-	<textarea>
+	<textarea id="kk">
 		
 	</textarea>
 	<div style="width: 100px;height: 100px;background-color: yellow" ></div>
   </body>
   <script type="text/javascript">
-  	// window.onload = function(){
-  	// 	document.body.innerHTML = '';
-  	// };
+  		var d = document.getElementById('kk');
+  		document.onkeydown = function (event) {
+  			console.log(event);
+  		};
   </script>
 </html>

@@ -179,6 +179,9 @@ function Game() {
 Game.prototype = {
 	//绘制游戏区域
 	draw:function(){
+		//清空屏幕
+		document.body.innerHTML = '';
+		//创建游戏框
 		var div = document.createElement("div");
 		div.id = "#box";
 		div.style.width = this.box_width+"px";
@@ -210,8 +213,7 @@ Game.prototype = {
 	
 	//开始游戏
 	startGame:function(){
-		//清空屏幕
-		document.body.innerHTML = '';	
+			
 		//绘制游戏区域	
 		this.draw();
 		
