@@ -4,7 +4,7 @@ var config = {
 	"box_height":650,     //游戏框高度，单位px
 	"fall_speed":2,       //下落速度
 	"cube_size":20,       //小方块的尺寸,单位px
-	"interval":1000,       //刷新位置时间间隔，单位ms
+	"interval":500,       //刷新位置时间间隔，单位ms
 	"half_cube_size":10,  //半边长度,单位px
 	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],//颜色
 	center:{     //投放中心点
@@ -29,11 +29,9 @@ var config = {
 };
 
 /*
-*定义一个cubes_site类，用这个cubes_site类来实现下落的方块
+*定义一个Cube类，用Cube类来实现下落的方块
 */
 //cubes_site数组保存每个小方块的坐标，
-//center保存初始旋转中心点的坐标
-//box是游戏框对象
 //game是Game对象
 function Cube(cubes_site,game) {
 	this.cubes_site = [];//小方块坐标
@@ -95,7 +93,6 @@ Cube.prototype = {
 				){
 				return true;
 			}else{//检测和落地的方块是否相撞
-				//往左或往右一格
 				var x = this.cubes[i].left + 
 					direction*config.cube_size;
 				var top = this.cubes[i].top;
@@ -114,7 +111,7 @@ Cube.prototype = {
 	},
 
 	// 绕center中心点旋转旋转，direction=1，顺时针旋转九十度，
-	// direction=-1则逆时针旋转九十度
+	// direction=-1逆时针旋转九十度
 	rotate:function (direction) {	
 		//改变相对于中心点的坐标	
 		for (var i = 0; i < this.cubes_site.length; i++) {
@@ -149,21 +146,21 @@ Cube.prototype = {
 			//console.log(this.center["x"]);
 			var site = this.siteConvert(this.cubes_site[i]["x"],
 				this.cubes_site[i]["y"]);
-			div.top = site.y;//相对于box元素的纵坐标
-			div.left = site.x;//相对于box元素的横坐标
-			div.style.top = site.y+"px";//设置style属性，进行定位
+			div.top = site.y;   //相对于box元素的纵坐标
+			div.left = site.x;  //相对于box元素的横坐标
+			div.style.top = site.y+"px"; //设置style属性，进行定位
 			div.style.left = site.x+"px";
 			//给小方块添加边框要考虑到边框占据的像素，
 			//这里用随机颜色加以区分
 			// div.style.backgroundColor = config.color[randomNum(0,3)];
-			div.className =  "cube";
+			div.className = "cube";
 			this.cubes.push(div);
 			this.box.appendChild(div);
 		}
 	},
 	
 	//坐标转换,把相对于旋转中心的坐标转换为box中的坐标
-	siteConvert:function (x,y) {
+	siteConvert:function (x, y) {
 		var site = {};
 		site.x = x-config.half_cube_size+this.center["x"];
 		site.y = y-config.half_cube_size+this.center["y"];
@@ -186,7 +183,7 @@ function Game() {
 	this.interval = config.interval;
 	//绑定事件
 	this.bindEvent();
-	console.log(this.map_blocks);
+	// console.log(this.map_blocks);
 }
 //box类原型
 Game.prototype = {
@@ -216,20 +213,50 @@ Game.prototype = {
 	bindEvent:function(){
 		var game = this;
 		document.onkeydown = function (event) {
-			if(event.keyCode==39){//右箭头，右移方块
+			if(game.game_state == 0){
+				return false;
+			}
+			if(event.keyCode == 39){     //右箭头，右移方块
 				game.blocks.move(1);
-			}else if(event.keyCode==37){ //左移方块
+			}else if(event.keyCode == 37){ //左移方块
 				game.blocks.move(-1);
-			}else if(event.keyCode==40){//向下加速下落
-				game.interval = 500;
-				console.log(game.interval);
+			}else if(event.keyCode == 40){//向下加速下落
+				if(game.speed_up == 0){
+					game.interval = 150;
+					clearTimeout(game.fall);
+					game.run();
+					game.speed_up = 1;
+				}
 			}
 		};
+		
 		document.onkeyup = function(){
+			if(game.game_state == 0){
+				return false;
+			}
 			if(event.keyCode==40){//停止加速
 				game.interval = config.interval;
+				clearTimeout(game.fall);
+				game.run();
+				game.speed_up = 0;
 			}
 		};
+	},
+	//div块向下滑动
+	slideCube:function(div, distance){
+		var d = 0;
+		function slide() {
+			div.top++;
+			d++;
+			div.style.top = div.top+"px";
+			if(d<distance){
+				setTimeout(slide,50);
+			}
+			
+		};
+
+		slide();
+
 	},
 	
 	//开始游戏
@@ -243,7 +270,9 @@ Game.prototype = {
 		//在game对象中保存对blocks的引用
 		this.blocks = blocks;
 		//定义游戏状态
-		var game_state = 1;
+		this.game_state = 1;
+		//加速
+		this.speed_up = 0;
 		//保存game对象
 		var game = this;
 		
@@ -251,10 +280,10 @@ Game.prototype = {
 
 		var run = function() {
 			// console.log(this);
-			//下落碰撞检测
+			//下落是碰撞检测
 			if(game.fallCollision(blocks)){
 				if(blocks.distance == 0){
-					game_state = 0;//结束游戏
+					game.game_state = 0;//结束游戏
 				}else{ //处理落下的方块并且生成新的方块
 					game.addNewBlocks(blocks);
 					blocks = new Cube(config.cubes_site[randomNum(0,6)],game);
@@ -264,14 +293,17 @@ Game.prototype = {
 				blocks.fall(); //go
 			}
 
-			if(game_state==1){
-				game.run = setTimeout(run, game.interval);
+			if(game.game_state==1){
+				//继续下落
+				game.fall = setTimeout(run, game.interval);
 			}else{
 				game.endGame();
 			}
 		};
 
-		run();
+		this.run = run;
+
+		this.run();
 		
 	},
 
@@ -290,7 +322,7 @@ Game.prototype = {
 			x = blocks.cubes[i].left;
 			y = blocks.cubes[i].top;
 			if(this.map_blocks[x].some(function(u){
-				return Math.abs(u-y)<=20;
+				return u-y==20;
 			})){
 				return true;
 			}
