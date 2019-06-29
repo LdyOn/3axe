@@ -186,7 +186,10 @@ function Game() {
 	for (var i = config.box_height; i >=0; i-=config.cube_size) {
 		this.cross_sites[i] = [];
 	}
-	
+	//最大纵坐标
+	this.max_y = config.box_height - config.cube_size;
+	//最大横坐标
+	this.max_x = config.box_width - config.cube_size;
 	//时间间隔
 	this.interval = config.interval;
 	//绑定事件
@@ -327,6 +330,8 @@ Game.prototype = {
 		//消除方块
 		for (var i = 0; i < blocks.cubes.length; i++) {
 			var y = blocks.cubes[i].top;
+			console.log(y);
+			console.log(blocks);
 			if(this.cross_sites[y].length == this.cross_cube_num){
 				for (var j = 0; j < this.cross_cube_num; j++) {
 					var cube = this.cross_sites[y][j];
@@ -357,16 +362,16 @@ Game.prototype = {
 	//碰撞检测，与已存在的方块或底部相撞
 	fallCollision: function(blocks) {
 		var x,y;
-		var bottom = config.box_height - config.cube_size;
+		// var bottom = config.box_height - config.cube_size;
 		for (var i = 0; i < blocks.cubes.length; i++) {
 			x = blocks.cubes[i].left;
 			y = blocks.cubes[i].top;
-			if( y == bottom){
+			if( y == this.max_y){
 				return true;
 			}
 			if(this.parallel_sites[x].some(function(u){
 				if(u==undefined)return false;
-				return u.top-y==20;
+				return u.top-y==config.cube_size;
 			})){
 				return true;
 			}
