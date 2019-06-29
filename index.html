@@ -72,12 +72,30 @@
 	<div style="width: 100px;height: 100px;background-color: yellow" ></div>
   </body>
   <script type="text/javascript">
-  		var d = document.getElementById('kk');
-  		document.onkeydown = function (event) {
-  			console.log(event);
-  		};
-  		document.onkeyup = function(event){
-  			console.log(event);
-		};
+  // 		var d = document.getElementById('kk');
+  // 		document.onkeydown = function (event) {
+  // 			console.log(event);
+  // 		};
+  // 		document.onkeyup = function(event){
+  // 			console.log(event);
+		// };
+		var b = {"x":99};
+
+		var a = [{"x":1},{"x":23},undefined,b];
+		delete a[3];
+		console.log(a.indexOf(b),b);
+
+		// a[0][0] = 1;
+		// a[0][1] = 2;
+		// a[1][0] = 3;
+		// a[1][1] = 4;
+		// a[1] = a[0];
+		console.log(a.some(function(y){
+			if(y==undefined){
+				return false;
+			}
+			return y.x==90;
+		}));
+		console.log(a);
   </script>
 </html>

@@ -95,9 +95,10 @@ Cube.prototype = {
 			}else{//检测和落地的方块是否相撞
 				var x = this.cubes[i].left + 
 					direction*config.cube_size;
-				var top = this.cubes[i].top;
-				if(this.game.map_blocks[x].some(function(u){
-					return Math.abs(u-top)<20;
+				var y = this.cubes[i].top;
+				if(this.game.parallel_sites[x].some(function(u){
+					if(u==undefined)return false;
+					return Math.abs(u.top-y)<20;
 				})){
 					return true;
 				}
@@ -174,16 +175,24 @@ Cube.prototype = {
 function Game() {
 	this.box_width = config.box_width;
 	this.box_height = config.box_height;
-	this.map_blocks = {}; // 已降落的方块
+	this.parallel_sites = []; // 纵向记录坐标
+	this.cross_sites = [];    //横向记录坐标
+	//每行最多方块数
+	this.cross_cube_num = parseInt(config["box_width"]/config["cube_size"]);
 	//初始化
-	for (var i = 0; i < config.box_width; i+=config.cube_size) { //初始化
-		this.map_blocks[i] = [config.box_height];
+	for (var i = 0; i < config.box_width; i+=config.cube_size) { 
+		this.parallel_sites[i] = [];
 	}
+	//初始化
+	for (var i = config.box_height; i >=0; i-=config.cube_size) {
+		this.cross_sites[i] = [];
+	}
+	
 	//时间间隔
 	this.interval = config.interval;
 	//绑定事件
 	this.bindEvent();
-	// console.log(this.map_blocks);
+	// console.log(this.parallel_sites);
 }
 //box类原型
 Game.prototype = {
@@ -222,14 +231,14 @@ Game.prototype = {
 				game.blocks.move(-1);
 			}else if(event.keyCode == 40){//向下加速下落
 				if(game.speed_up == 0){
-					game.interval = 150;
+					game.interval = 50;
 					clearTimeout(game.fall);
 					game.run();
 					game.speed_up = 1;
 				}
 			}
 		};
-		
+
 		document.onkeyup = function(){
 			if(game.game_state == 0){
 				return false;
@@ -244,7 +253,7 @@ Game.prototype = {
 	},
 	//div块向下滑动
 	slideCube:function(div, distance){
-		var d = 0;
+		var d = 1;
 		function slide() {
 			div.top++;
 			d++;
@@ -275,11 +284,10 @@ Game.prototype = {
 		this.speed_up = 0;
 		//保存game对象
 		var game = this;
-		
-		// run(); 
 
-		var run = function() {
-			// console.log(this);
+		console.log(game.cross_sites,game.parallel_sites);
+
+		var run = function() {			
 			//下落是碰撞检测
 			if(game.fallCollision(blocks)){
 				if(blocks.distance == 0){
@@ -309,20 +317,57 @@ Game.prototype = {
 
 	//“吸收”新的方块
 	addNewBlocks:function(blocks){
+
 		for (var i = 0; i < blocks.cubes.length; i++) {
-			this.map_blocks[blocks.cubes[i].left].push(
-				blocks.cubes[i].top);
+			this.parallel_sites[blocks.cubes[i].left].push(
+				blocks.cubes[i]);
+			this.cross_sites[blocks.cubes[i].top].push(
+				blocks.cubes[i]);
 		}
+
+		//消除方块
+		for (var i = 0; i < blocks.cubes.length; i++) {
+			var y = blocks.cubes[i].top;
+			if(this.cross_sites[y].length == this.cross_cube_num){
+				for (var j = 0; j < this.cross_cube_num; j++) {
+					var cube = this.cross_sites[y][j];
+					//移除方块
+					this.box.removeChild(cube);
+					var index = this.parallel_sites[cube.left].indexOf(
+						cube);
+					delete this.parallel_sites[cube.left][index];
+				}
+				y -= config.cube_size;
+
+				while(this.cross_sites[y].length != 0){
+					//下落
+					for (var j = 0; j < this.cross_sites[y].length; j++) {						
+						this.slideCube(this.cross_sites[y][j],config.cube_size);
+					}
+					this.cross_sites[y+config.cube_size] = this.cross_sites[y];
+					y -= config.cube_size;
+				}
+				
+			}
+						
+		}
+		
 	},
+
 
 	//碰撞检测，与已存在的方块或底部相撞
 	fallCollision: function(blocks) {
 		var x,y;
+		var bottom = config.box_height - config.cube_size;
 		for (var i = 0; i < blocks.cubes.length; i++) {
 			x = blocks.cubes[i].left;
 			y = blocks.cubes[i].top;
-			if(this.map_blocks[x].some(function(u){
-				return u-y==20;
+			if( y == bottom){
+				return true;
+			}
+			if(this.parallel_sites[x].some(function(u){
+				if(u==undefined)return false;
+				return u.top-y==20;
 			})){
 				return true;
 			}
