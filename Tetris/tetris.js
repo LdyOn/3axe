@@ -2,9 +2,8 @@
 var config = {
 	"box_width":500,      //游戏框宽度，单位px
 	"box_height":650,     //游戏框高度，单位px
-	"fall_speed":2,       //下落速度
 	"cube_size":20,       //小方块的尺寸,单位px
-	"interval":500,       //刷新位置时间间隔，单位ms
+	"interval":500,       //下落速度；刷新位置时间间隔，单位ms
 	"half_cube_size":10,  //半边长度,单位px
 	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],//颜色
 	center:{     //投放中心点
@@ -253,7 +252,7 @@ Game.prototype = {
 	},
 	//div块向下滑动
 	slideCube:function(div, distance){
-		var d = 1;
+		var d = 0;
 		function slide() {
 			div.top++;
 			d++;
