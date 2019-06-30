@@ -1,14 +1,14 @@
 //全局变量config，保存游戏配置
 var config = {
-	"box_width":500,      //游戏框宽度，单位px
-	"box_height":650,     //游戏框高度，单位px
+	"box_width":400,      //游戏框宽度，单位px
+	"box_height":600,     //游戏框高度，单位px
 	"cube_size":20,       //小方块的尺寸,单位px
 	"interval":500,       //下落速度；刷新位置时间间隔，单位ms
 	"half_cube_size":10,  //半边长度,单位px
 	"color":["#FFCC66","#C0C0C0","#FF0000","#FF33CC"],//颜色
 	center:{     //投放中心点
-		x:250,
-		y:60,
+		x:210,
+		y:50,
 	},
 	"cubes_site":[ //方块初始坐标
 		[{"x":0,"y":0}],//一个方块
@@ -319,42 +319,53 @@ Game.prototype = {
 
 	//“吸收”新的方块
 	addNewBlocks:function(blocks){
-
+		var y = [];
 		for (var i = 0; i < blocks.cubes.length; i++) {
 			this.parallel_sites[blocks.cubes[i].left].push(
 				blocks.cubes[i]);
 			this.cross_sites[blocks.cubes[i].top].push(
 				blocks.cubes[i]);
+			if(y.indexOf(blocks.cubes[i].top)<0)
+				y.push(blocks.cubes[i].top);
 		}
-
-		//消除方块
-		for (var i = 0; i < blocks.cubes.length; i++) {
-			var y = blocks.cubes[i].top;
-			console.log(y);
-			console.log(blocks);
-			if(this.cross_sites[y].length == this.cross_cube_num){
+		y = y.sort(function(a,b){
+			return b-a;
+		});
+		// console.log(y);
+		var fall = 0;
+		for (var i = 0; i < y.length; i++) {			
+			y[i] += fall;
+			console.log(y[i]);
+			//判断该行是否可消除
+			if(this.cross_sites[y[i]].length == this.cross_cube_num){
+				//移除该行方块
 				for (var j = 0; j < this.cross_cube_num; j++) {
-					var cube = this.cross_sites[y][j];
+					var cube = this.cross_sites[y[i]][j];
 					//移除方块
 					this.box.removeChild(cube);
 					var index = this.parallel_sites[cube.left].indexOf(
 						cube);
-					delete this.parallel_sites[cube.left][index];
+					this.parallel_sites[cube.left].splice(index,1);
+					index = this.cross_sites[cube.top].indexOf(
+						cube);
+					this.cross_sites[cube.top].splice(index,1);
 				}
-				y -= config.cube_size;
-
-				while(this.cross_sites[y].length != 0){
+				var init = y[i] - config.cube_size;
+				//让上面的方块下落
+				while(this.cross_sites[init].length != 0){
 					//下落
-					for (var j = 0; j < this.cross_sites[y].length; j++) {						
-						this.slideCube(this.cross_sites[y][j],config.cube_size);
+					for (var j = 0; j < this.cross_sites[init].length; j++) {						
+						this.slideCube(this.cross_sites[init][j],config.cube_size);
 					}
-					this.cross_sites[y+config.cube_size] = this.cross_sites[y];
-					y -= config.cube_size;
+					this.cross_sites[init+config.cube_size] = this.cross_sites[init];
+					init -= config.cube_size;
 				}
-				
+				//改变fall值
+				fall += config.cube_size;
 			}
-						
 		}
+
+		
 		
 	},
 

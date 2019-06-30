@@ -82,8 +82,10 @@
 		var b = {"x":99};
 
 		var a = [{"x":1},{"x":23},undefined,b];
-		delete a[3];
-		console.log(a.indexOf(b),b);
+		// delete a[3];
+		a.splice(3,1);
+		// a[3] = 11;
+		console.log(a.length,a);
 
 		// a[0][0] = 1;
 		// a[0][1] = 2;
