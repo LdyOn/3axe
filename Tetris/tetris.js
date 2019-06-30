@@ -23,6 +23,8 @@ var config = {
 		{"x":0,"y":0},{"x":20,"y":0}],//四个方块，品字型
 		[{"x":0,"y":-20},{"x":0,"y":0},
 		{"x":20,"y":0},{"x":20,"y":20}],//四个方块，Z字型
+		[{"x":0,"y":0},{"x":-20,"y":0},
+		{"x":0,"y":20},{"x":-20,"y":20}],//四个方块，田字型
 	],
 
 };
@@ -255,19 +257,20 @@ Game.prototype = {
 	},
 	//div块向下滑动
 	slideCube:function(div, distance){
-		var d = 0;
-		function slide() {
-			div.top++;
-			d++;
-			div.style.top = div.top+"px";
-			if(d<distance){
-				setTimeout(slide,50);
-			}
+		// var d = 0;
+		// function slide() {
+		// 	div.top++;
+		// 	d++;
+		// 	div.style.top = div.top+"px";
+		// 	if(d<distance){
+		// 		setTimeout(slide,50);
+		// 	}
 			
-		};
+		// };
 
-		slide();
-
+		// slide();
+		div.top += distance;
+		div.style.top = div.top+"px";
 	},
 	
 	//开始游戏
@@ -277,7 +280,8 @@ Game.prototype = {
 		this.draw();
 		
 		//随机生成一组方块，投放方块到box
-		var blocks = new Cube(config.cubes_site[randomNum(0,6)],this);
+		var blocks = new Cube(
+			config.cubes_site[randomNum(0,config["cubes_site"].length-1)],this);
 		//在game对象中保存对blocks的引用
 		this.blocks = blocks;
 		//定义游戏状态
@@ -287,7 +291,8 @@ Game.prototype = {
 		//保存game对象
 		var game = this;
 
-		console.log(game.cross_sites,game.parallel_sites);
+		console.log(game.cross_sites);
+		console.log(game.parallel_sites);
 
 		var run = function() {			
 			//下落是碰撞检测
@@ -296,7 +301,8 @@ Game.prototype = {
 					game.game_state = 0;//结束游戏
 				}else{ //处理落下的方块并且生成新的方块
 					game.addNewBlocks(blocks);
-					blocks = new Cube(config.cubes_site[randomNum(0,6)],game);
+					blocks = new Cube(
+						config.cubes_site[randomNum(0,config["cubes_site"].length-1)],game);
 					game.blocks = blocks;
 				}
 			}else{
@@ -335,7 +341,7 @@ Game.prototype = {
 		var fall = 0;
 		for (var i = 0; i < y.length; i++) {			
 			y[i] += fall;
-			console.log(y[i]);
+			// console.log(y[i]);
 			//判断该行是否可消除
 			if(this.cross_sites[y[i]].length == this.cross_cube_num){
 				//移除该行方块
@@ -346,10 +352,11 @@ Game.prototype = {
 					var index = this.parallel_sites[cube.left].indexOf(
 						cube);
 					this.parallel_sites[cube.left].splice(index,1);
-					index = this.cross_sites[cube.top].indexOf(
-						cube);
-					this.cross_sites[cube.top].splice(index,1);
+					// index = this.cross_sites[cube.top].indexOf(
+					// 	cube);
+					// this.cross_sites[cube.top].splice(index,1);
 				}
+				this.cross_sites[y[i]] = [];
 				var init = y[i] - config.cube_size;
 				//让上面的方块下落
 				while(this.cross_sites[init].length != 0){
@@ -360,6 +367,7 @@ Game.prototype = {
 					this.cross_sites[init+config.cube_size] = this.cross_sites[init];
 					init -= config.cube_size;
 				}
+				this.cross_sites[init+config.cube_size] = [];
 				//改变fall值
 				fall += config.cube_size;
 			}
