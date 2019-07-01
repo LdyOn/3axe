@@ -172,7 +172,7 @@ Cube.prototype = {
 
 };
 
-//定义box类，绘制游戏区域
+//定义Game类，控制游戏运行
 function Game() {
 	this.box_width = config.box_width;
 	this.box_height = config.box_height;
@@ -198,7 +198,7 @@ function Game() {
 	this.bindEvent();
 	// console.log(this.parallel_sites);
 }
-//box类原型
+//Game类原型
 Game.prototype = {
 	//绘制游戏区域
 	draw:function(){
@@ -207,8 +207,8 @@ Game.prototype = {
 		//创建游戏框
 		var div = document.createElement("div");
 		div.id = "#box";
-		div.style.width = this.box_width+"px";
-		div.style.height = this.box_height+"px";
+		div.style.width  =  this.box_width+"px";
+		div.style.height =  this.box_height+"px";
 		div.style.borderStyle = "solid";
 		div.style.borderWidth = "10px";
 		div.style.borderColor = "#33FF33";
