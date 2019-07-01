@@ -1,4 +1,4 @@
-# three axe
+# web  components
 前端组件和前端测试
 ## (Ⅰ)  tetris(俄罗斯方块)
 The tetris.js  file  defined  there  objects to run the game.
