@@ -1,36 +1,48 @@
 #menu{
 	width: 200px;
-	border:solid 2px green;
-	background-color: #808080;
+	/*border:solid 2px green;*/
+	
 }
 .item{
 	color:#F8F8FF;
 	display: block;
 	text-align: center;
-	line-height: 30px;
+	line-height: 40px;
 	width:200px;
-	height: 30px;
-	font-size: 15px;
+	height: 40px;
+	/*font-size: 15px;*/
 	/*margin: 5px;*/
 	/*background-color: #808080;*/
-	/*border:solid 1px white;*/
+	border-bottom:solid 1px white;
+	position: relative;
+	background-color: #808080;
+	/*padding: 5px;*/
 }
 .triangle{
 	/*margin-left: 50px;*/
-	display: block;
-	font-size:15px;
-	width: 30px;
-	height: 30px;
-	float: right;
-	line-height: 30px;
-	/*position: relative;*/
+	/*display: block;*/
+	font-size:10px;
+	/*width: 30px;
+	height: 30px;*/
+	/*float: right;*/
+	line-height: 40px;
+	position: absolute;
 	/*margin-right: 10px;*/
 	/*right: 10px;*/
+	/*top: 10px;*/
+	right: 10px;
 }
 .item a{
 	color:white;
 	text-decoration:none;
 }
 .sub-item{
-
+	display: none;
+	width: 200px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	color:#F8F8FF;
+	border-bottom: solid 1px white;
+	background-color:#CD4F39;
 }
