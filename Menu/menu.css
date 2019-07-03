@@ -7,9 +7,9 @@
 	color:#F8F8FF;
 	display: block;
 	text-align: center;
-	line-height: 40px;
+	line-height: 45px;
 	width:200px;
-	height: 40px;
+	height: 45px;
 	/*font-size: 15px;*/
 	/*margin: 5px;*/
 	/*background-color: #808080;*/
@@ -32,17 +32,18 @@
 	/*top: 10px;*/
 	right: 10px;
 }
-.item a{
+#menu a{
 	color:white;
 	text-decoration:none;
 }
 .sub-item{
 	display: none;
+	visibility: 0;
 	width: 200px;
 	height: 30px;
 	line-height: 30px;
 	text-align: center;
 	color:#F8F8FF;
 	border-bottom: solid 1px white;
-	background-color:#CD4F39;
+	background-color:#B5B5B5;
 }
