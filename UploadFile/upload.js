@@ -9,10 +9,16 @@ window.onload = function () {
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", url);
 		xhr.upload.onprogress = function(e){
+			// var  bar_length  = document.getElementById("progress-bar").style
+			// .width;
+			// var bar_length = bar_length.
 			if(e.lengthComputable){
-				var mesg=Math.round(e.loaded/e.total*100)+"% complete";
-				var p = document.getElementById("progress");
+				var percent = Math.round(e.loaded/e.total*100);
+				var mesg = percent+"%";
+				var p = document.getElementById("progress-text");
 				p.innerHTML = mesg;
+				var bar = document.getElementsByClassName(
+					"progress-bar")[1].style.width = percent*2+"px";
 			}
 		};
 		xhr.send(file);

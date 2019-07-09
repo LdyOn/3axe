@@ -3,9 +3,46 @@
 <head>
 	<title>文件上传</title>
 	<meta charset="utf-8">
+	<style type="text/css">
+		#progress{
+			height: 50px;
+			width: 300px;
+			border:solid 1px black;
+			display: -webkit-flex;
+			display: flex;
+			-webkit-align-items:center;
+			align-items:center;
+			-webkit-justify-content:center;
+			justify-content:center;
+			/*flex-direction:column;*/
+		}
+		.progress-bar{
+			height: 20px;
+			width: 200px;
+			/*background-color: orange;*/
+			border:solid 1px green;
+			border-radius:10px;
+		}
+
+		#progress-text{
+			width: 50px;
+			margin-left: 10px;
+		}
+
+	</style>
 </head>
 <body>
-	<span id="progress"></span>
+	<div id="progress">
+		<!-- 进度条 -->
+		<div class="progress-bar">
+			<div class="progress-bar" style="background-color: orange;width: 0px;border:none;">
+				
+			</div>
+		</div>
+		<div id="progress-text" >
+			0%
+		</div>
+	</div>
 	<input type="file" data-uploadto="/test.php" name="uploadimg">
 <script type="text/javascript" src="upload.js"></script>
 </body>
