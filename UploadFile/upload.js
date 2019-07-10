@@ -1,5 +1,4 @@
 window.onload = function () {
-	// console.log(File);
 	var uploadimg = document.getElementsByName("uploadimg")[0];
 	if(uploadimg.type !== "file");
 	var url = uploadimg.getAttribute("data-uploadto");
@@ -9,9 +8,7 @@ window.onload = function () {
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", url);
 		xhr.upload.onprogress = function(e){
-			// var  bar_length  = document.getElementById("progress-bar").style
-			// .width;
-			// var bar_length = bar_length.
+		
 			if(e.lengthComputable){
 				var percent = Math.round(e.loaded/e.total*100);
 				var mesg = percent+"%";
